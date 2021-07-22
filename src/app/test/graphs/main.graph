@@ -1,0 +1,10 @@
+graph TD
+	aa[Node A]
+	bb{Node B}=>aa
+	cc->aa
+	dd/hallo\
+	aa..>dd
+graph LR
+	d
+	f==>e(Node E)
+	e-->d

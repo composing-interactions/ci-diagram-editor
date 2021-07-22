@@ -1,0 +1,36 @@
+{
+  "name": "question-of-mapping",
+  "version": "1.0.0",
+  "description": "question-of-mapping",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superpositioncc/question-of-mapping.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/superpositioncc/question-of-mapping/issues"
+  },
+  "homepage": "https://github.com/superpositioncc/question-of-mapping#readme",
+  "dependencies": {
+    "dagre": "^0.8.5",
+    "elkjs": "^0.7.1",
+    "eslint": "^7.28.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "parcel": "^2.0.0-beta.2",
+    "pegjs": "^0.10.0",
+    "prettier": "^2.3.1",
+    "reset-css": "^5.0.1",
+    "web-worker": "^1.0.0"
+  }
+}
