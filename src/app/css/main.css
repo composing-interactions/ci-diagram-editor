@@ -1,0 +1,21 @@
+html {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	background-color: #efefef;
+}
+
+svg {
+	display: block;
+	margin: 0 auto;
+	background-color: #fff;
+}
+
+svg + svg {
+	margin-top: 50px;
+}

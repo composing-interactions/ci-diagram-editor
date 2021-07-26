@@ -1,10 +1,10 @@
 graph TD
 	aa[Node A]
-	bb{Node B}=>aa
-	cc->aa
+	bb{Node B}=aa
+	cc->aa.input
 	dd/hallo\
-	aa..>dd
+	aa.output..>dd
 graph LR
-	d
-	f==>e(Node E)
-	e-->d
+	a<==>b(Node D)
+	b->c
+	c=>b

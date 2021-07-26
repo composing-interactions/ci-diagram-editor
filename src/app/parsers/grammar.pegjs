@@ -11,13 +11,20 @@ Graph
 
       body.forEach(command => {
           command.nodes.forEach(node => {
-              if (!nodes[node.id]) nodes[node.id] = node;
+              if (!nodes[node.id]) {
+	              nodes[node.id] = node;
+              }
+              else {
+	              nodes[node.id].ports = {...nodes[node.id].ports, ...node.ports}
+              }
           });
 
           command.edges.forEach(edge => {
               edges.push(edge);
           });
       });
+      
+      Object.keys(nodes).map(n => nodes[n].ports = Object.values(nodes[n].ports).map(p => ({...p, id: n + "." + p.id})));
 
       return {
           direction: dir, nodes: Object.values(nodes), edges
@@ -38,8 +45,24 @@ GraphCommand
         if (edge && b) {
         	nodes.push(b);
             
-            edge.from = a.id;
-            edge.to = b.id;
+            let from = a.id;
+            let to = b.id;
+            
+            let fromPorts = Object.keys(a.ports);
+            let toPorts = Object.keys(b.ports);
+            
+            if (fromPorts.length > 0) {
+            	from += '.' + fromPorts[0];
+                a.ports[fromPorts[0]].type = 'output';
+            }
+            
+            if (toPorts.length > 0) {
+            	to += '.' + toPorts[0];
+                b.ports[toPorts[0]].type = 'input';
+            }
+            
+            edge.from = from;
+            edge.to = to;
             edges.push(edge);
         }
         
@@ -47,7 +70,7 @@ GraphCommand
     }
     
 GraphNode
-	= id:$[A-Za-z]+ symbol:([\[\{\(\\/])? label:$([A-Za-z ]+)? ([\]\}\)\\])? {
+	= id:$[A-Za-z]+ symbol:([\[\{\(\\/])? label:$([A-Za-z ]+)? ([\]\}\)\\])? port:$("."[A-Za-z ]+)? {
        		let type;
             
             switch(symbol) {
@@ -68,13 +91,26 @@ GraphNode
                 break;
             }
             
-    		return {id, label, type}
+            const node = {id, label, type, ports: {}};
+            
+            if (port) {
+	            let id = port.substring(1);
+            	node.ports[id] = {id, label: id};
+            }
+            
+    		return node;
 		}
     
 GraphEdge
-	= symbol:$("="+ / "-"+ / "."+) ">" {
+	= backward:"<"? symbol:$("="+ / "-"+ / "."+) forward:">"? {
     		let type;
+            let direction;
             
+            if (backward && forward) direction = 'both';
+            else if (backward) direction = 'backward';
+            else if (forward) direction = 'forward';
+            else direction = 'none';
+                       
             switch(symbol.charAt(0)) {
             	case '=':
                 type = "normal";
@@ -89,7 +125,10 @@ GraphEdge
                 break;
             }
             
-    		return {type}
+    		return {
+            	type,
+                direction
+            }
         }
     
 Direction
