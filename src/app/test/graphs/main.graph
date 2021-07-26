@@ -1,10 +1,10 @@
 graph TD
 	aa[Node A]
-	bb{Node B}=aa
-	cc->aa.input
+	bb{Node B} ==> aa.enable[#Enable]
+	cc <- aa.input[My Input]
 	dd/hallo\
-	aa.output..>dd
+	aa.output ..> dd
 graph LR
-	a<==>b(Node D)
-	b->c
-	c=>b
+	b(Node D) => c.myInput[~Christmas]
+	a <==> c.mySecondInput
+	c -> b

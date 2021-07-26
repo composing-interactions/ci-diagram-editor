@@ -4,3 +4,20 @@
 <marker id="arrowhead-end" markerWidth="3.5" markerHeight="4.375" refX="3.5" refY="2.1875" orient="auto" overflow="visible" fill="none" stroke="#000">
 	<path d="M0 0 L3.5 2.1875 0 4.375" />
 </marker>
+<symbol id="data" viewBox="-15 -15 30 30">
+	<path fill="none" stroke="#000" d="M 11.2 3.45 c -3.7 0 -3.7 -6.8 -7.5 -6.8 c -3.7 0 -3.7 6.8 -7.5 6.8 S -7.4 -3.45 -11.2 -3.45"/>
+</symbol>
+<symbol id="enable" viewBox="-15 -15 30 30">
+	<rect fill="none" stroke="#000" x="-11.2" y="-11.2" width="22.4" height="22.4"/>
+	<line fill="none" stroke="#000" x1="-11.2" y1="11.2" x2="11.2" y2="-11.2"/>
+	<line fill="none" stroke="#000" x1="11.2" y1="11.2" x2="-11.2" y2="-11.2"/>
+</symbol>
+<symbol id="parameter" viewBox="-15 -15 30 30">
+	<line fill="none" stroke="#000" x1="0" y1="11.2" x2="0" y2="-11.2"/>
+	<line fill="none" stroke="#000" x1="7.9" y1="7.9" x2="-7.9" y2="-7.9"/>
+	<line fill="none" stroke="#000" x1="11.2" y1="0" x2="-11.2" y2="0"/>
+</symbol>
+<symbol id="trigger" viewBox="-15 -15 30 30">
+	<path fill="none" stroke="#000" d="M6.6-11.2H-6.6c-2.6,0-4.6,2.1-4.6,4.6V6.6c0,2.6,2.1,4.6,4.6,4.6H6.6c2.6,0,4.6-2.1,4.6-4.6l0-13.1C11.2-9.1,9.1-11.2,6.6-11.2z"/>
+	<line fill="none" stroke="#000" x1="0" y1="11.2" x2="0" y2="-11.2"/>
+</symbol>

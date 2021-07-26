@@ -13,7 +13,7 @@ const randomHex = (size) =>
 const margin = 25;
 const edgeMargin = 10;
 const portMargin = 10;
-
+const symbolMargin = 5;
 class Mapper {
 	constructor(data) {
 		this.init();
@@ -66,7 +66,7 @@ class Mapper {
 				'layered.spacing.baseValue': 140,
 				'layered.feedbackEdges': true,
 				'elk.padding': '[top=0,left=0,right=0,bottom=0]',
-				'spacing.portsSurrounding': '[top=25,left=0,right=0,bottom=25]',
+				'spacing.portsSurrounding': '[top=30,left=0,right=0,bottom=30]',
 			},
 			children: [],
 			edges: [],
@@ -180,25 +180,79 @@ class Mapper {
 
 					if (node.ports) {
 						node.ports.forEach((port) => {
+							const portGroup = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'g'
+							);
+
 							const portLabel = document.createElementNS(
 								'http://www.w3.org/2000/svg',
 								'text'
 							);
 
-							portLabel.innerHTML = port.data.label;
+							let extraMargin = 0;
 
-							portLabel.setAttribute(
-								'x',
-								port.x + (port.data.type === 'input' ? portMargin : -portMargin)
+							if (port.data.symbol !== '') {
+								extraMargin =
+									port.data.type === 'input'
+										? 30 + symbolMargin
+										: -30 - symbolMargin;
+
+								const symbol = document.createElementNS(
+									'http://www.w3.org/2000/svg',
+									'use'
+								);
+
+								let href;
+
+								switch (port.data.symbol) {
+									case '~':
+										href = 'data';
+										break;
+									case '*':
+										href = 'parameter';
+										break;
+									case '#':
+										href = 'enable';
+										break;
+									case '!':
+										href = 'trigger';
+										break;
+									default:
+										break;
+								}
+
+								symbol.setAttributeNS(
+									'http://www.w3.org/1999/xlink',
+									'xlink:href',
+									`#${href}`
+								);
+								symbol.setAttribute('x', port.data.type === 'input' ? 0 : -30);
+								symbol.setAttribute('y', -15);
+								symbol.setAttribute('width', 30);
+								symbol.setAttribute('height', 30);
+
+								portGroup.appendChild(symbol);
+							}
+
+							portGroup.setAttribute(
+								'transform',
+								`translate(${
+									port.x +
+									(port.data.type === 'input' ? portMargin : -portMargin)
+								},${port.y})`
 							);
-							portLabel.setAttribute('y', port.y);
+
+							portLabel.innerHTML = port.data.label;
+							portLabel.setAttribute('x', extraMargin);
 
 							portLabel.classList.add('port-label');
 							portLabel.classList.add(
 								port.data.type === 'input' ? 'port-input' : 'port-output'
 							);
 
-							g.appendChild(portLabel);
+							portGroup.appendChild(portLabel);
+							g.appendChild(portGroup);
 						});
 					}
 

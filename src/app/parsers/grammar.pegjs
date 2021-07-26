@@ -13,10 +13,31 @@ Graph
           command.nodes.forEach(node => {
               if (!nodes[node.id]) {
 	              nodes[node.id] = node;
+              } else {
+	              let portID = Object.keys(node.ports)[0];
+                  
+                  if (portID) {
+                  	if(nodes[node.id].ports[portID]) {
+                    	if (node.ports[portID].label.length > 0) nodes[node.id].ports[portID].label = node.ports[portID].label;
+                    	if (node.ports[portID].symbol.length > 0) nodes[node.id].ports[portID].symbol = node.ports[portID].symbol;
+                    } else {
+                  		nodes[node.id].ports[portID] = node.ports[portID];
+                    }
+                  }
               }
-              else {
-	              nodes[node.id].ports = {...nodes[node.id].ports, ...node.ports}
-              }
+              
+              //else if (Object.keys(node.ports) > 0) {
+                //  let portID = Object.keys(node.ports)[0];
+                  
+                  //if(nodes[node.id].ports[portID]) {
+                 //  	nodes[node.id].ports[portID] = {
+                 //   	...nodes[node.id].ports[portID],
+                 //   	...node.ports[portID]
+                 //   };
+                 // } else {
+                 // 	nodes[node.id].ports[portID] = node.ports[portID];
+                 // }
+              //}
           });
 
           command.edges.forEach(edge => {
@@ -70,7 +91,7 @@ GraphCommand
     }
     
 GraphNode
-	= id:$[A-Za-z]+ symbol:([\[\{\(\\/])? label:$([A-Za-z ]+)? ([\]\}\)\\])? port:$("."[A-Za-z ]+)? {
+	= id:$[A-Za-z]+ symbol:([\[\{\(\\/])? label:$([A-Za-z ]+)? ([\]\}\)\\])? port:GraphPort? {
        		let type;
             
             switch(symbol) {
@@ -94,13 +115,15 @@ GraphNode
             const node = {id, label, type, ports: {}};
             
             if (port) {
-	            let id = port.substring(1);
-            	node.ports[id] = {id, label: id};
+            	node.ports[port.id] = port;
             }
             
     		return node;
 		}
-    
+
+GraphPort
+	= "." id:$([A-Za-z]+) "["? symbol:$[~*#!]? label:$([A-Za-z ]+)? "]"? { return {id, label, symbol} }
+
 GraphEdge
 	= backward:"<"? symbol:$("="+ / "-"+ / "."+) forward:">"? {
     		let type;
