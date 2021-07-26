@@ -8,3 +8,6 @@ graph LR
 	b(Node D) => c.myInput[~Christmas]
 	a <==> c.mySecondInput
 	c -> b
+	a -> e[Hello]
+	b => e.input[*Multiplier]
+	e -> output/\
