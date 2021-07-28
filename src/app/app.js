@@ -16,6 +16,12 @@ const parser = peg.generate(grammar);
 
 const graphs = parser.parse(graphDef);
 
+document.querySelector('.debug').innerHTML = JSON.stringify(
+	graphs,
+	null,
+	'    '
+);
+
 graphs.forEach((graph) => {
 	const mapper = new Mapper(graph);
 });

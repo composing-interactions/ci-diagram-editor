@@ -1,13 +1,15 @@
 graph TD
 	aa[Node A]
-	bb{Node B} ==> aa.enable[#Enable]
-	cc <- aa.input[My Input]
-	dd/hallo\
-	aa.output ..> dd
+	bb{Node B}          ==>      aa.enable[|E|Enable]
+	cc              <-           aa.input[My Input]
+	dd>hallo>
+	aa.output        |A|**>      dd                          // Gradual increase
 graph LR
-	b(Node D) => c.myInput[~Christmas]
-	a <==> c.mySecondInput
-	c -> b
-	a -> e[Hello]
-	b => e.input[*Multiplier]
-	e -> output/\
+	a                                                        // Firmly
+	b                    =>      c.myInput[|D|Christmas]
+	a               <=USB=>|V|   c.mySecondInput
+	a.output[Out]     |B|=>      a.input[|T|In]
+	c                    ->      b(Microphone)
+	a.out[Twee]      -OSC->      e[Hello]
+	b                 |S|=>|S|   e.input[|P|Multiplier]
+	e                    ->      output<<Output<<
