@@ -1,10 +1,48 @@
-graph TD
+graph
+	source[Synthesizer]
+
+	source.audioRight[R]  |A|=Jack=>   adc.right[|D|Right]
+	source.audioLeft[L]   |A|=Jack=>   adc[ADC].left[|D|Left]
+
+	adc                    |D|=USB=>   switch[Switch]
+
+	switch.left                |D|=>   destA<Left DAC<
+	switch.both                |D|=>   destA
+	switch.both                |D|=>   destB<Right DAC<
+	switch.right               |D|=>   destB
+
+	trigger(Foot Pedal).^out      =>   switch.^trigger       // Press down firmly
+
+graph
+	a()
+	b(())
+	c[]
+	d[[]]
+	e>>
+	f>>>>
+	g<<
+	h<<<<
+	i{}
+	j{{}}
+	k(Label)
+	l((Label))
+	m[Label]
+	n[[Label]]
+	o>Label>
+	p>>Label>>
+	q<Label<
+	r<<Label<<
+	s{Label}
+	t{{Label}}
+
+graph
 	aa[Node A]
-	bb{Node B}          ==>      aa.enable[|E|Enable]
+	bb{{Node B}}        ==>      aa.enable[|E|Enable]
 	cc              <-           aa.input[My Input]
 	dd>hallo>
 	aa.output        |A|**>      dd                          // Gradual increase
-graph LR
+
+graph
 	a                                                        // Firmly
 	b                    =>      c.myInput[|D|Christmas]
 	a               <=USB=>|V|   c.mySecondInput

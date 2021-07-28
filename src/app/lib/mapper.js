@@ -1,5 +1,6 @@
 import ELK from 'elkjs';
 import fs from 'fs';
+import wrapLines from './lib';
 
 const styleDef = fs.readFileSync(`${__dirname}/../css/graph.css`, 'utf-8');
 const svgDefs = fs.readFileSync(`${__dirname}/../svg/defs.svg`, 'utf-8');
@@ -16,6 +17,7 @@ const portMargin = 10;
 const symbolPortMargin = 5;
 const symbolEdgeMargin = 8;
 const symbolNodeMargin = 8;
+const nodeLabelPadding = 30;
 
 class Mapper {
 	constructor(data) {
@@ -70,11 +72,12 @@ class Mapper {
 				'spacing.nodeNode': 60,
 				'spacing.edgeNode': 30,
 				'spacing.edgeEdge': 30,
-				'spacing.portPort': 45,
+				'spacing.portPort': 48,
 				'spacing.edgeLabel': 15,
 				'spacing.nodeSelfLoop': 30,
 				'layered.edgeLabels.sideSelection': 'SMART_UP',
 				'layered.spacing.baseValue': 60,
+				'layered.layering.strategy': 'NETWORK_SIMPLEX',
 				'layered.wrapping.strategy': 'MULTI_EDGE',
 				'layered.wrapping.additionalEdgeSpacing': 0,
 				'layered.spacing.edgeEdgeBetweenLayers': 30,
@@ -89,24 +92,43 @@ class Mapper {
 	}
 
 	addNode(data) {
-		const ports = data.ports.map((port) => ({
-			id: port.id,
-			width: 0,
-			height: 0,
-			properties: {
-				side: port.type === 'input' ? 'WEST' : 'EAST',
-			},
-			data: port,
-		}));
+		const ports = data.ports.map((port) => {
+			let side;
+
+			switch (port.isVertical) {
+				case true:
+					side = port.type === 'input' ? 'NORTH' : 'SOUTH';
+					break;
+				default:
+					side = port.type === 'input' ? 'WEST' : 'EAST';
+					break;
+			}
+
+			return {
+				id: port.id,
+				width: 0,
+				height: 0,
+				properties: {
+					side,
+				},
+				data: port,
+			};
+		});
 
 		this.graph.children.push({
 			id: data.id,
-			width: data.type == 'triangle' ? (Math.sqrt(3) * 150) / 2 : 150,
-			height: 150,
+			width:
+				data.type.substring(0, 8) === 'triangle'
+					? (Math.sqrt(3) * 150) / 2
+					: data.type.substring(0, 7) === 'rhombus'
+					? 200
+					: 150,
+			height: data.type.substring(0, 7) === 'rhombus' ? 200 : 150,
 			data,
 			layoutOptions: {
 				'portAlignment.default':
-					data.type === 'circle' || data.type === 'triangle'
+					data.type.substring(0, 8) === 'triangle' ||
+					data.type.substring(0, 6) === 'circle'
 						? 'CENTER'
 						: 'JUSTIFIED',
 				portConstraints: 'FIXED_SIDE',
@@ -161,8 +183,165 @@ class Mapper {
 					const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
 					let box;
+					let labelAdjustment = 0;
 
 					switch (node.data.type) {
+						case 'circle':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'ellipse'
+							);
+
+							box.setAttribute('rx', node.width / 2);
+							box.setAttribute('ry', node.height / 2);
+							box.setAttribute('cx', node.width / 2);
+							box.setAttribute('cy', node.height / 2);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							break;
+						case 'circle-dashed':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'ellipse'
+							);
+
+							box.setAttribute('rx', node.width / 2);
+							box.setAttribute('ry', node.height / 2);
+							box.setAttribute('cx', node.width / 2);
+							box.setAttribute('cy', node.height / 2);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							box.setAttribute('stroke-dasharray', '98px 40px 196px 40px');
+							break;
+						case 'square':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'rect'
+							);
+
+							box.setAttribute('width', node.width);
+							box.setAttribute('height', node.height);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							break;
+						case 'square-dashed':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'rect'
+							);
+
+							box.setAttribute('width', node.width);
+							box.setAttribute('height', node.height);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							box.setAttribute('stroke-dasharray', '53 44 53 0');
+							break;
+						case 'triangle-right':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'polygon'
+							);
+
+							box.setAttribute(
+								'points',
+								`0,0 ${node.width},${node.height / 2} 0,${node.height}`
+							);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+
+							labelAdjustment = -0.1;
+							break;
+						case 'triangle-right-dashed':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'polygon'
+							);
+
+							box.setAttribute(
+								'points',
+								`0,0 ${node.width},${node.height / 2} 0,${node.height}`
+							);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							box.setAttribute(
+								'stroke-dasharray',
+								'24 34 34 34 48 34 34 34 48 34 34 34'
+							);
+
+							labelAdjustment = -0.1;
+							break;
+						case 'triangle-left':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'polygon'
+							);
+
+							box.setAttribute(
+								'points',
+								`0,${node.height / 2} ${node.width},0 ${node.width}, ${
+									node.height
+								}`
+							);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+
+							labelAdjustment = 0.1;
+							break;
+						case 'triangle-left-dashed':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'polygon'
+							);
+
+							box.setAttribute(
+								'points',
+								`0,${node.height / 2} ${node.width},0 ${node.width}, ${
+									node.height
+								}`
+							);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							box.setAttribute(
+								'stroke-dasharray',
+								'24 34 34 34 48 34 34 34 48 34 34 34'
+							);
+
+							labelAdjustment = 0.1;
+							break;
+						case 'rhombus':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'polygon'
+							);
+
+							box.setAttribute(
+								'points',
+								`${node.width / 2},0 ${node.width},${node.height / 2} ${
+									node.width / 2
+								},${node.height} 0,${node.height / 2}`
+							);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							break;
+						case 'rhombus-dashed':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'polygon'
+							);
+
+							box.setAttribute(
+								'points',
+								`${node.width / 2},0 ${node.width},${node.height / 2} ${
+									node.width / 2
+								},${node.height} 0,${node.height / 2}`
+							);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							box.setAttribute(
+								'stroke-dasharray',
+								'0 26 90 52 90 52 90 52 90 26'
+							);
+							break;
 						case 'comment':
 							box = document.createElementNS(
 								'http://www.w3.org/2000/svg',
@@ -178,63 +357,7 @@ class Mapper {
 							box.setAttribute('y', 0);
 							box.setAttribute('stroke', '#000');
 							break;
-
-						case 'dashed-square':
-							box = document.createElementNS(
-								'http://www.w3.org/2000/svg',
-								'rect'
-							);
-
-							box.setAttribute('width', node.width);
-							box.setAttribute('height', node.height);
-							box.setAttribute('fill', 'none');
-							box.setAttribute('stroke', '#000');
-							box.setAttribute('stroke-dasharray', '53px 44px 53px 0px');
-
-							box.classList.add('dashed');
-							break;
-
-						case 'circle':
-							box = document.createElementNS(
-								'http://www.w3.org/2000/svg',
-								'ellipse'
-							);
-
-							box.setAttribute('rx', node.width / 2);
-							box.setAttribute('ry', node.height / 2);
-							box.setAttribute('cx', node.width / 2);
-							box.setAttribute('cy', node.height / 2);
-							box.setAttribute('fill', 'none');
-							box.setAttribute('stroke', '#000');
-							break;
-
-						case 'triangle':
-							box = document.createElementNS(
-								'http://www.w3.org/2000/svg',
-								'polygon'
-							);
-
-							box.setAttribute(
-								'points',
-								`${0},${node.height / 2} ${node.width},0 ${node.width}, ${
-									node.height
-								}`
-							);
-							box.setAttribute('fill', 'none');
-							box.setAttribute('stroke', '#000');
-
-							break;
-
 						default:
-							box = document.createElementNS(
-								'http://www.w3.org/2000/svg',
-								'rect'
-							);
-
-							box.setAttribute('width', node.width);
-							box.setAttribute('height', node.height);
-							box.setAttribute('fill', 'none');
-							box.setAttribute('stroke', '#000');
 							break;
 					}
 
@@ -316,20 +439,47 @@ class Mapper {
 						});
 					}
 
-					const label = document.createElementNS(
-						'http://www.w3.org/2000/svg',
-						'text'
-					);
+					if (box) g.appendChild(box);
+
+					if (node.data.label.length > 0) {
+						const { lines, lineHeight } = wrapLines(
+							node.data.label,
+							node.width * (1.0 - labelAdjustment * 2) - nodeLabelPadding,
+							`font-family: 'CMU Typewriter Text Variable Width (Subset)'; font-size: 17px; line-height: 25px;`
+						);
+
+						const label = document.createElementNS(
+							'http://www.w3.org/2000/svg',
+							'g'
+						);
+
+						label.setAttribute(
+							'transform',
+							`translate(${(0.5 + labelAdjustment) * node.width}, ${
+								node.height / 2
+							})`
+						);
+
+						for (let i = 0; i < lines.length; i++) {
+							const line = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'text'
+							);
+
+							line.setAttribute(
+								'y',
+								((lines.length - 1) * -0.5 + i) * lineHeight
+							);
+							line.innerHTML = lines[i];
+							label.appendChild(line);
+						}
+
+						label.classList.add('node-label');
+
+						g.appendChild(label);
+					}
 
 					g.setAttribute('transform', `translate(${node.x}, ${node.y})`);
-
-					label.setAttribute('x', node.width / 2);
-					label.setAttribute('y', node.height / 2);
-					label.innerHTML = node.data.label;
-					label.classList.add('node-label');
-
-					g.appendChild(box);
-					g.appendChild(label);
 
 					this.container.appendChild(g);
 				});
@@ -532,7 +682,6 @@ class Mapper {
 					});
 
 					if (edge.labels) {
-						console.log(edge);
 						edge.labels.forEach((labelData) => {
 							const label = document.createElementNS(
 								'http://www.w3.org/2000/svg',

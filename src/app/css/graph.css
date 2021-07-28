@@ -10,7 +10,8 @@
 	vector-effect: non-scaling-stroke;
 }
 
-.node-label {
+.node-label,
+.node-label text {
 	font-size: 17px;
 	text-anchor: middle;
 	alignment-baseline: middle;

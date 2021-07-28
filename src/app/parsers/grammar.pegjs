@@ -5,7 +5,8 @@ GraphList
 	= Graph+
 	
 Graph
-	= "graph" _ dir:Direction NL body:GraphBody {
+	// = "graph" _ dir:Direction NL body:GraphBody {
+	= "graph" NL body:GraphBody {
 		const nodes = {};
 		const edges = [];
 		const comments = [];
@@ -25,7 +26,7 @@ Graph
 					if (portID) {
 						if(nodes[node.id].ports[portID]) {
 							if (node.ports[portID].label.length > 0) nodes[node.id].ports[portID].label = node.ports[portID].label;
-							if (node.ports[portID].symbol.length > 0) nodes[node.id].ports[portID].symbol = node.ports[portID].symbol;
+							if (node.ports[portID].symbol == null) nodes[node.id].ports[portID].symbol = node.ports[portID].symbol;
 						} else {
 								nodes[node.id].ports[portID] = node.ports[portID];
 						}
@@ -50,7 +51,8 @@ Graph
 		Object.keys(nodes).map(n => nodes[n].ports = Object.values(nodes[n].ports).map(p => ({...p, id: n + "." + p.id})));
 
 		return {
-			direction: dir, nodes: Object.values(nodes), edges, comments
+			// direction: dir, 
+			nodes: Object.values(nodes), edges, comments
 		}
 	}
 	
@@ -58,7 +60,7 @@ GraphBody
 	= GraphLine+
 
 GraphLine
-	= _ cmd:GraphCommand _* comment:GraphComment? NL { return {...cmd, comments: [comment]} }
+	= _ cmd:GraphCommand _* comment:GraphComment? NL+ { return {...cmd, comments: [comment]} }
 
 GraphComment
 	= "//" label:$[A-Za-z ]+ { return label.trim() }
@@ -97,7 +99,7 @@ GraphCommand
 	
 GraphNode
 	= id:$[A-Za-z]+ typeAndLabel:(GraphNodeTypeLabeled/GraphNodeTypeUnlabeled)? port:GraphPort? {
-		let type = 'normal';
+		let type = 'square';
 		let label = '';
 
 		if (typeAndLabel) {
@@ -154,7 +156,7 @@ GraphNodeTypeUnlabeled
 		}[type], label: ''}}
 
 GraphPort
-	= "." id:$([A-Za-z]+) "["? symbol:GraphSymbol? label:$([A-Za-z ]+)? "]"? { return {id, label: label.trim(), symbol} }
+	= "." isVertical:"^"? id:$([A-Za-z]+) "["? symbol:GraphSymbol? label:$([A-Za-z ]+)? "]"? { return {id, label: label.trim(), symbol, isVertical: isVertical ? true : false} }
 
 GraphSymbol
 	= "|" symbol:$[AVDEBSPTavdebspt] "|" { return symbol }
@@ -185,8 +187,8 @@ GraphEdgeSymbolLabeled
 GraphEdgeSymbolUnlabeled
 	= type:$("="+ / "-"+ / "*"+) { return {type: {'=': 'normal', '-': 'dashed', '*': 'dotted'}[type], label: null}}
 
-Direction
-	= "TD" / "LR"
+// Direction
+// 	= "TD" / "LR"
 	
 WS
 	= [ \t]
@@ -194,4 +196,4 @@ WS
 _
 	= WS+
 	
-NL = "\n"
+NL = _* "\n"
