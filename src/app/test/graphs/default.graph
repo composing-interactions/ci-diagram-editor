@@ -1,0 +1,14 @@
+graph
+	source[Synthesizer]
+
+	source.audioRight[R]  |A|=Jack=>   adc.right[|D|Right]
+	source.audioLeft[L]   |A|=Jack=>   adc[ADC].left[|D|Left]
+
+	adc                    |D|=USB=>   switch[Switch]
+
+	switch.left                |D|=>   destA<Left DAC<
+	switch.both                |D|=>   destA
+	switch.both                |D|=>   destB<Right DAC<
+	switch.right               |D|=>   destB
+
+	trigger(Foot Pedal).^out      =>   switch.^trigger       // Press down firmly

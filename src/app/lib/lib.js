@@ -1,4 +1,4 @@
-export default function wrapLines(text, width, css) {
+export function wrapLines(text, width, css) {
 	const container = document.createElement('div');
 
 	const element = document.createElement('div');
@@ -51,4 +51,13 @@ export default function wrapLines(text, width, css) {
 	document.body.removeChild(container);
 
 	return { lines: lines.map((line) => line.join(' ')), lineHeight };
+}
+
+export function escapeHTML(unsafe) {
+	return unsafe
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;');
 }
