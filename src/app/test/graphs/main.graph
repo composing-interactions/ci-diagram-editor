@@ -1,4 +1,18 @@
 graph
+	value[Accelerometer].x[|D|x] |D|-> bufferX%Buffer%
+	value[Accelerometer].y[|D|y] |D|-> bufferY%Buffer%
+	bufferX |B|==> filterX[Filter Accumulation]
+	bufferY |B|==> filterY[Filter Smoothing]
+
+graph
+	leftHand((Ľavá ruka)) => slider(Gombík) // Pracovať pomaly zľava doprava
+
+	value[!22] => max[!Max]
+	slider |D|**> max
+	max => delta[!Δ?]
+	delta => result<V&yacute;sledok<
+
+graph
 	source[Synthesizer]
 
 	source.audioRight[R]  |A|=Jack=>   adc.right[|D|Right]
@@ -14,32 +28,10 @@ graph
 	trigger(Foot Pedal).^out      =>   switch.^trigger       // Press down firmly
 
 graph
-	a()
-	b(())
-	c[]
-	d[[]]
-	e>>
-	f>>>>
-	g<<
-	h<<<<
-	i{}
-	j{{}}
-	k(Label)
-	l((Label))
-	m[Label]
-	n[[Label]]
-	o>Label>
-	p>>Label>>
-	q<Label<
-	r<<Label<<
-	s{Label}
-	t{{Label}}
-
-graph
 	aa[Node A]
 	bb{{Node B}}        ==>      aa.enable[|E|Enable]
 	cc              <-           aa.input[My Input]
-	dd>hallo>
+	dd>>hallo>>
 	aa.output        |A|**>      dd                          // Gradual increase
 
 graph
@@ -50,4 +42,4 @@ graph
 	c                    ->      b(Microphone)
 	a.out[Twee]      -OSC->      e[Hello]
 	b                 |S|=>|S|   e.input[|P|Multiplier]
-	e                    ->      output<<Output<<
+	e                    ->      output<Output<

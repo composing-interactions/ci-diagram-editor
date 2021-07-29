@@ -16,7 +16,7 @@ Graph
 				if (!nodes[node.id]) {
 					nodes[node.id] = node;
 				} else {
-					if (node.label.length > 0) {
+					if (node.label.text.length > 0) {
 						nodes[node.id].label = node.label;
 						nodes[node.id].type = node.type;
 					}
@@ -41,7 +41,7 @@ Graph
 			command.comments.forEach(comment => {
 				if (comment) {
 					comments.push({
-						label: comment,
+						label: { text: comment, emphasis: false },
 						from: command.nodes[0].id
 					});
 				}
@@ -63,7 +63,7 @@ GraphLine
 	= _ cmd:GraphCommand _* comment:GraphComment? NL+ { return {...cmd, comments: [comment]} }
 
 GraphComment
-	= "//" label:$[A-Za-z ]+ { return label.trim() }
+	= "//" label:$AllowedCommentString { return label.trim() }
 
 GraphCommand
 	= a:GraphNode _* edge:GraphEdge? _* b:GraphNode? {
@@ -100,7 +100,7 @@ GraphCommand
 GraphNode
 	= id:$[A-Za-z]+ typeAndLabel:(GraphNodeTypeLabeled/GraphNodeTypeUnlabeled)? port:GraphPort? {
 		let type = 'square';
-		let label = '';
+		let label = { text: '', emphasis: false };
 
 		if (typeAndLabel) {
 			type = typeAndLabel.type;
@@ -117,46 +117,62 @@ GraphNode
 	}
 
 GraphNodeTypeLabeled
-	= type:("(("/"("/"[["/"["/">>"/">"/"<<"/"<"/"{{"/"{") label:$([A-Za-z ]+) secondType:("))"/")"/"]]"/"]"/">>"/">"/"<<"/"<"/"}}"/"}")& { return secondType === {
+	= type:("(("/"("/"[["/"["/">>"/"<"/"{{"/"%") label:GraphNodeLabel secondType:("))"/")"/"]]"/"]"/">>"/"<"/"}}"/"%")& { return secondType === {
 			'(': ')',
 			'((': '))',
 			'[': ']',
 			'[[': ']]',
-			'>': '>',
+			// '>': '>',
 			'>>': '>>',
 			'<': '<',
-			'<<': '<<',
-			'{': '}',
-			'{{': '}}'
+			// '<<': '<<',
+			// '{': '}',
+			'{{': '}}',
+			'%': '%',
 		}[type] } { return { type: {
 			'(': 'circle',
 			'((': 'circle-dashed',
 			'[': 'square',
 			'[[': 'square-dashed',
-			'>': 'triangle-right',
+			// '>': 'triangle-right',
 			'>>': 'triangle-right-dashed',
 			'<': 'triangle-left',
-			'<<': 'triangle-left-dashed',
-			'{': 'rhombus',						/*}   PEG.js balance curly braces */
+			// '<<': 'triangle-left-dashed',
+			// '{': 'rhombus',						/*}   PEG.js balance curly braces */
 			'{{': 'rhombus-dashed', 			/*}}  PEG.js balance curly braces */
-		}[type], label: label.trim()}}
+			'%': 'arrow',
+		}[type], label}}
+
+GraphNodeLabel
+	= emphasis:"!"? text:$(AllowedNodeString) { return { text: text.trim(), emphasis: emphasis ? true : false }}
 
 GraphNodeTypeUnlabeled
-	= type:("()"/"(())"/"[]"/"[[]]"/">>>>"/">>"/"<<<<"/"<<"/"{}"/"{{}}") { return { type: {
+	= type:("()"/"(())"/"[]"/"[[]]"/">>>>"/"<<"/"{{}}"/"%%") { return { type: {
 			'()': 'circle',
 			'(())': 'circle-dashed',
 			'[]': 'square',
 			'[[]]': 'square-dashed',
-			'>>': 'triangle-right',
+			// '>>': 'triangle-right',
 			'>>>>': 'triangle-right-dashed',
 			'<<': 'triangle-left',
-			'<<<<': 'triangle-left-dashed',
-			'{}': 'rhombus',
+			// '<<<<': 'triangle-left-dashed',
+			// '{}': 'rhombus',
 			'{{}}': 'rhombus-dashed',
-		}[type], label: ''}}
+			'%%': 'arrow',
+		}[type], label: { text: '', emphasis: false }}}
 
 GraphPort
-	= "." isVertical:"^"? id:$([A-Za-z]+) "["? symbol:GraphSymbol? label:$([A-Za-z ]+)? "]"? { return {id, label: label.trim(), symbol, isVertical: isVertical ? true : false} }
+	= "." isVertical:"^"? id:$([A-Za-z]+) labelAndSymbol:GraphPortLabel? {
+    	const label = labelAndSymbol ? labelAndSymbol.label.trim() : '';
+        const symbol = labelAndSymbol ? labelAndSymbol.symbol : null;
+        
+    	return {id, label, symbol, isVertical: isVertical ? true : false}
+    }
+
+GraphPortLabel
+	= "[" symbol:GraphSymbol? label:$(AllowedPortString)? "]" {
+    	return { symbol, label: label ? label : '' }
+    }
 
 GraphSymbol
 	= "|" symbol:$[AVDEBSPTavdebspt] "|" { return symbol }
@@ -182,14 +198,25 @@ GraphEdge
 		}
 
 GraphEdgeSymbolLabeled
-	= type:$("="+ / "-"+ / "*"+) label:$([A-Za-z ]+) secondType:$("="+ / "-"+ / "."+)& { return type === secondType } { return {type: {'=': 'normal', '-': 'dashed', '*': 'dotted'}[type], label: label}}
+	= type:$("="+ / "-"+ / "*"+) label:$(AllowedEdgeString) secondType:$("="+ / "-"+ / "*"+)& { return type.charAt(0) === secondType.charAt(0) } { return {type: {'=': 'normal', '-': 'dashed', '*': 'dotted'}[type.charAt(0)], label: label}}
 
 GraphEdgeSymbolUnlabeled
-	= type:$("="+ / "-"+ / "*"+) { return {type: {'=': 'normal', '-': 'dashed', '*': 'dotted'}[type], label: null}}
+	= type:$("="+ / "-"+ / "*"+) { return {type: {'=': 'normal', '-': 'dashed', '*': 'dotted'}[type.charAt(0)], label: null}}
 
 // Direction
 // 	= "TD" / "LR"
-	
+AllowedEdgeString
+	= [^=\-\*>\n]+
+
+AllowedNodeString
+	= [^\[\(\{\<\]\)\}\>\|%\n]+
+
+AllowedPortString
+	= [^\[\]\|\n]+
+
+AllowedCommentString
+	= [^\n]+
+
 WS
 	= [ \t]
 	

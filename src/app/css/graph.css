@@ -17,6 +17,11 @@
 	alignment-baseline: middle;
 }
 
+.node-label.emphasis,
+.node-label.emphasis text {
+	font-size: 44px;
+}
+
 .port-label {
 	font-size: 17px;
 	text-anchor: middle;

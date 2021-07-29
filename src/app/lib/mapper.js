@@ -122,6 +122,8 @@ class Mapper {
 					? (Math.sqrt(3) * 150) / 2
 					: data.type.substring(0, 7) === 'rhombus'
 					? 200
+					: data.type.substring(0, 5) === 'arrow'
+					? 168
 					: 150,
 			height: data.type.substring(0, 7) === 'rhombus' ? 200 : 150,
 			data,
@@ -221,6 +223,23 @@ class Mapper {
 
 							box.setAttribute('width', node.width);
 							box.setAttribute('height', node.height);
+							box.setAttribute('fill', 'none');
+							box.setAttribute('stroke', '#000');
+							break;
+						case 'arrow':
+							box = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'polygon'
+							);
+
+							box.setAttribute(
+								'points',
+								`0,0 ${node.width * 0.89},0 ${node.width},${node.height / 2} ${
+									node.width * 0.89
+								},${node.height} 0,${node.height} ${node.width * 0.11},${
+									node.height / 2
+								}`
+							);
 							box.setAttribute('fill', 'none');
 							box.setAttribute('stroke', '#000');
 							break;
@@ -441,11 +460,13 @@ class Mapper {
 
 					if (box) g.appendChild(box);
 
-					if (node.data.label.length > 0) {
+					if (node.data.label.text.length > 0) {
 						const { lines, lineHeight } = wrapLines(
-							node.data.label,
+							node.data.label.text,
 							node.width * (1.0 - labelAdjustment * 2) - nodeLabelPadding,
-							`font-family: 'CMU Typewriter Text Variable Width (Subset)'; font-size: 17px; line-height: 25px;`
+							`font-family: 'CMU Typewriter Text Variable Width (Subset)'; font-size: ${
+								node.data.label.emphasis ? 44 : 17
+							}px; line-height: ${node.data.label.emphasis ? 53 : 20}px;`
 						);
 
 						const label = document.createElementNS(
@@ -476,6 +497,8 @@ class Mapper {
 
 						label.classList.add('node-label');
 
+						if (node.data.label.emphasis) label.classList.add('emphasis');
+
 						g.appendChild(label);
 					}
 
@@ -486,6 +509,19 @@ class Mapper {
 
 				data.edges.forEach((edge) => {
 					if (edge.data.isComment) return;
+
+					let edgeAdjustment = 0;
+
+					if (edge.data.to) {
+						const toNodeID = edge.data.to.split('.')[0];
+
+						const toNode = data.children.filter(
+							(node) => node.id === toNodeID
+						)[0];
+
+						if (toNode && toNode.data.type === 'arrow')
+							edgeAdjustment = 0.11 * toNode.width;
+					}
 
 					const edgeGroup = document.createElementNS(
 						'http://www.w3.org/2000/svg',
@@ -535,7 +571,7 @@ class Mapper {
 							});
 						}
 
-						d += ` L ${section.endPoint.x - endVector.x} ${
+						d += ` L ${section.endPoint.x - endVector.x + edgeAdjustment} ${
 							section.endPoint.y - endVector.y
 						}`;
 
