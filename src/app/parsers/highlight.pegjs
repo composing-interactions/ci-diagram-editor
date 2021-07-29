@@ -5,7 +5,7 @@ GraphList
 	= a:Graph+ { return a.join('') }
 	
 Graph
-	= a:$"graph" b:$NL c:GraphBody { return a + b + c }
+	= a:$"diagram" b:$NL c:GraphBody { return a + b + c }
 	
 GraphBody
 	= a:GraphLine+ { return a.join('') }

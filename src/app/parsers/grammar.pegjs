@@ -6,7 +6,7 @@ GraphList
 	
 Graph
 	// = "graph" _ dir:Direction NL body:GraphBody {
-	= "graph" NL body:GraphBody {
+	= "diagram" NL body:GraphBody {
 		const nodes = {};
 		const edges = [];
 		const comments = [];

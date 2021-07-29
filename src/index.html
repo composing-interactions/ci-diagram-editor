@@ -4,13 +4,26 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Graph</title>
+	<title>Diagram editor</title>
 	<link rel="stylesheet" href="../node_modules/reset-css/reset.css">
 	<link rel="stylesheet" href="app/css/main.css">
 </head>
 <body>
-	<div class="input"></div>
-	<div class="output"></div>
+	<div class="editor">
+		<img class="logo" src="app/svg/logo.svg"/>
+
+		<div class="input-wrapper">
+			<textarea class="input" spellcheck="false"></textarea>
+			<div class="highlighted"></div>
+			<div class="toolbar">
+				<div class="button save-input">Save source (.diagram)</div>
+				<div class="button save-output">Save output graphics (.svg)</div>
+				<div class="error"></div>
+			</div>
+		</div>
+		
+		<div class="output"></div>
+	</div>
 	<script src="app/app.js"/>
 </body>
 </html>

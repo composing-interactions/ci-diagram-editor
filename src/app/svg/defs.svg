@@ -1,36 +1,36 @@
 <marker id="arrowheadStart" markerWidth="8.4" markerHeight="10.5" refX="0" refY="5.25" orient="auto" overflow="visible" fill="none" stroke="#000">
-	<path d="M 8.4 0 L 0 5.25 L 8.4 10.5" stroke-dasharray="100%"/>
+	<path d="M 8.4 0 L 0 5.25 L 8.4 10.5" stroke-dasharray="100%" stroke-linecap="round" stroke-linejoin="round"></path>
 </marker>
 <marker id="arrowheadEnd" markerWidth="8.4" markerHeight="10.5" refX="8.4" refY="5.25" orient="auto" overflow="visible" fill="none" stroke="#000">
-	<path d="M 0 0 L 8.4 5.25 L 0 10.5" stroke-dasharray="100%"/>
+	<path d="M 0 0 L 8.4 5.25 L 0 10.5" stroke-dasharray="100%" stroke-linecap="round" stroke-linejoin="round"></path>
 </marker>
 <symbol id="edgeTypeAudio" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M-11-11.1c3.7,0,3.7,22.2,7.3,22.2C0,11.1,0-11.1,3.6-11.1c3.7,0,3.7,22.2,7.3,22.2"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M-11-11.1c3.7,0,3.7,22.2,7.3,22.2C0,11.1,0-11.1,3.6-11.1c3.7,0,3.7,22.2,7.3,22.2"></path>
 </symbol>
 <symbol id="edgeTypeBuffer" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M12-12h-24v24h24V-12z M-0.1,12v-23.7 M-6,12v-23.7 M5.9,12v-23.7"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M12-12h-24v24h24V-12z M-0.1,12v-23.7 M-6,12v-23.7 M5.9,12v-23.7"></path>
 </symbol>
 <symbol id="edgeTypeDataStream" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M-10.5-8.8V8.8 M3.6-6.9c3.8,0,6.9,3.1,6.9,6.9S7.4,6.9,3.6,6.9S-3.3,3.8-3.3,0S-0.2-6.9,3.6-6.9z"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M-10.5-8.8V8.8 M3.6-6.9c3.8,0,6.9,3.1,6.9,6.9S7.4,6.9,3.6,6.9S-3.3,3.8-3.3,0S-0.2-6.9,3.6-6.9z"></path>
 </symbol>
 <symbol id="edgeTypeEvent" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M-11.9,0c0,6.5,5.3,11.9,11.9,11.9S11.9,6.6,11.9,0S6.6-11.9,0-11.9S-11.9-6.5-11.9,0z M0,11.9v-23.7"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M-11.9,0c0,6.5,5.3,11.9,11.9,11.9S11.9,6.6,11.9,0S6.6-11.9,0-11.9S-11.9-6.5-11.9,0z M0,11.9v-23.7"></path>
 </symbol>
 <symbol id="edgeTypeSpectral" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M14.5,0L0-14.5L-14.5,0L0,14.5L14.5,0z"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M14.5,0L0-14.5L-14.5,0L0,14.5L14.5,0z"></path>
 </symbol>
 <symbol id="edgeTypeVideo" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M12-12h-24v24h24V-12z"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M12-12h-24v24h24V-12z"></path>
 </symbol>
 <symbol id="portTypeDataStream" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M12,3.7c-4,0-4-7.3-8-7.3S0,3.7-4,3.7s-4-7.3-8-7.3"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M12,3.7c-4,0-4-7.3-8-7.3S0,3.7-4,3.7s-4-7.3-8-7.3"></path>
 </symbol>
 <symbol id="portTypeEnable" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M12-12h-24v24h24V-12z M12-12l-24,24 M12,12l-24-24"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M12-12h-24v24h24V-12z M12-12l-24,24 M12,12l-24-24"></path>
 </symbol>
 <symbol id="portTypeParameter" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M0,12v-24 M8.5,8.5l-17-17 M12,0h-24"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M0,12v-24 M8.5,8.5l-17-17 M12,0h-24"></path>
 </symbol>
 <symbol id="portTypeTrigger" viewBox="-15 -15 30 30">
-	<path fill="none" stroke="#000000" d="M7.4-12H-7.3c-2.6,0-4.6,2.1-4.6,4.6V7.4c0,2.6,2.1,4.6,4.6,4.6H7.4C10,12,12,9.9,12,7.4V-7.3C12-9.9,9.9-12,7.4-12z M0,12v-24"/>
+	<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" d="M7.4-12H-7.3c-2.6,0-4.6,2.1-4.6,4.6V7.4c0,2.6,2.1,4.6,4.6,4.6H7.4C10,12,12,9.9,12,7.4V-7.3C12-9.9,9.9-12,7.4-12z M0,12v-24"></path>
 </symbol>

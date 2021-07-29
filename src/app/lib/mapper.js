@@ -42,6 +42,10 @@ class Mapper {
 		this.svg.setAttribute('height', 500);
 		this.svg.setAttribute('overflow', 'visible');
 
+		this.svg.setAttribute('version', '1.0');
+		this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+		this.svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
 		const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
 		defs.innerHTML = svgDefs;
 
@@ -563,39 +567,70 @@ class Mapper {
 							endVector.x *= edgeMargin / endVectorLength;
 							endVector.y *= edgeMargin / endVectorLength;
 
-							let d = `M ${section.startPoint.x + startVector.x} ${
-								section.startPoint.y + startVector.y
-							}`;
+							let edgeElement;
 
 							if (section.bendPoints) {
+								let d = `M ${section.startPoint.x + startVector.x} ${
+									section.startPoint.y + startVector.y
+								}`;
+
 								section.bendPoints.forEach((point) => {
 									d += ` L ${point.x} ${point.y}`;
 								});
+
+								d += ` L ${section.endPoint.x - endVector.x + edgeAdjustment} ${
+									section.endPoint.y - endVector.y
+								}`;
+
+								edgeElement = document.createElementNS(
+									'http://www.w3.org/2000/svg',
+									'path'
+								);
+
+								edgeElement.setAttribute('d', d);
+							} else {
+								edgeElement = document.createElementNS(
+									'http://www.w3.org/2000/svg',
+									'line'
+								);
+
+								edgeElement.setAttribute(
+									'x1',
+									section.startPoint.x + startVector.x
+								);
+								edgeElement.setAttribute(
+									'y1',
+									section.startPoint.y + startVector.y
+								);
+								edgeElement.setAttribute(
+									'x2',
+									section.endPoint.x - endVector.x + edgeAdjustment
+								);
+								edgeElement.setAttribute(
+									'y2',
+									section.endPoint.y - endVector.y
+								);
 							}
 
-							d += ` L ${section.endPoint.x - endVector.x + edgeAdjustment} ${
-								section.endPoint.y - endVector.y
-							}`;
-
-							const path = document.createElementNS(
-								'http://www.w3.org/2000/svg',
-								'path'
-							);
-
-							path.setAttribute('d', d);
-							path.setAttribute('fill', 'none');
-							path.setAttribute('stroke', '#000');
+							edgeElement.setAttribute('fill', 'none');
+							edgeElement.setAttribute('stroke', '#000');
 
 							switch (edge.data.direction) {
 								case 'both':
-									path.setAttribute('marker-start', 'url(#arrowheadStart)');
-									path.setAttribute('marker-end', 'url(#arrowheadEnd)');
+									edgeElement.setAttribute(
+										'marker-start',
+										'url(#arrowheadStart)'
+									);
+									edgeElement.setAttribute('marker-end', 'url(#arrowheadEnd)');
 									break;
 								case 'backward':
-									path.setAttribute('marker-start', 'url(#arrowheadStart)');
+									edgeElement.setAttribute(
+										'marker-start',
+										'url(#arrowheadStart)'
+									);
 									break;
 								case 'forward':
-									path.setAttribute('marker-end', 'url(#arrowheadEnd)');
+									edgeElement.setAttribute('marker-end', 'url(#arrowheadEnd)');
 									break;
 								default:
 									break;
@@ -603,10 +638,13 @@ class Mapper {
 
 							switch (edge.data.type) {
 								case 'dashed':
-									path.setAttribute('stroke-dasharray', '5px 10px 5px 0px');
+									edgeElement.setAttribute(
+										'stroke-dasharray',
+										'5px 10px 5px 0px'
+									);
 									break;
 								case 'dotted':
-									path.setAttribute(
+									edgeElement.setAttribute(
 										'stroke-dasharray',
 										'5px 10px 1px 9px 5px 0px'
 									);
@@ -719,7 +757,7 @@ class Mapper {
 								edgeGroup.appendChild(symbol);
 							}
 
-							edgeGroup.appendChild(path);
+							edgeGroup.appendChild(edgeElement);
 						});
 
 						if (edge.labels) {

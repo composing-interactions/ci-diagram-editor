@@ -1,4 +1,4 @@
-graph
+diagram
 	source[Synthesizer]
 
 	source.audioRight[R]  |A|=Jack=>   adc.right[|D|Right]
