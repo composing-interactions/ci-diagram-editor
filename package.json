@@ -2,7 +2,7 @@
   "name": "question-of-mapping",
   "version": "1.0.0",
   "description": "question-of-mapping",
-  "main": "index.js",
+  "main": "src/index.html",
   "scripts": {
     "dev": "parcel src/index.html",
     "build": "parcel build src/index.html"
