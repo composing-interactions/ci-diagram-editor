@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="app/css/main.css">
 </head>
 <body>
-	<div class="editor">
+	<div class="editor documentation-open">
 		<img class="logo" src="app/svg/logo.svg"/>
 
 		<div class="input-wrapper">
@@ -17,12 +17,151 @@
 			<div class="highlighted"></div>
 			<div class="toolbar">
 				<div class="button save-input">Save source (.diagram)</div>
-				<div class="button save-output">Save output graphics (.svg)</div>
+				<div class="button save-output">Save output graphics (zipped) (.svg)</div>
 				<div class="error"></div>
 			</div>
 		</div>
 		
 		<div class="output"></div>
+
+		<div class="documentation">
+			<div class="toggle-documentation"></div>
+			<div class="content">
+				<u>About the editor</u>
+				<p>The editor saves your work automatically as you type. This happens locally, in your browser. The graphics are also regenerated automatically. The syntax of your diagram code is checked on-the-fly, and any errors will be shown to you. If no errors are found, the editor will highlight the syntax of your diagram.</p>
+				<p>To download the diagram source code, click the Save source button. To download the generated SVG files as a ZIP, click the Save output graphics button.</p>
+
+				<u>About the language</u>
+				<p>Copy the code examples below to the editor to show the output of each.</p>
+				<p>Multiple diagrams can be defined in a single file. Every diagram begins with the diagram directive, followed by one or more indented lines containing one directive each.</p>
+
+				<code>diagram
+	<span class="syntax-node-id">a</span>
+
+diagram
+	<span class="syntax-node-id">b</span></code>
+
+				<p>A directive must define or reuse a node. This is done by defining the identifier of a node (highlighted in light orange). Optionally, a node can be given a type, which will affect its visual representation (square, round, triangle, rhombus, or arrow). Some of these types have a dashed variant, or are only availale as dashed. Access these by doubling the type symbol. If a type is given, a label can optionally also be added to the node. Finally, this label can be given emphasis if required.</p>
+				<code>diagram
+	<span class="syntax-node-id">mySimpleNode</span>
+	<span class="syntax-node-id">mySquareNode</span><span class="syntax-node-label">[]</span>
+	<span class="syntax-node-id">myLabeledNode</span><span class="syntax-node-label">[Labeled Node]</span>
+	<span class="syntax-node-id">myEmphasizedNode</span><span class="syntax-node-label">[!Max]</span>
+	<span class="syntax-node-id">myDashedNode</span><span class="syntax-node-label">[[]]</span>
+
+	<span class="syntax-node-id">myRoundNode</span><span class="syntax-node-label">(Round Node)</span>
+	<span class="syntax-node-id">myEmphasizedDashedRoundNode</span><span class="syntax-node-label">((!A))</span>
+	<span class="syntax-node-id">myRightTriangleNode</span><span class="syntax-node-label">&gt;&gt;&gt;&gt;</span>
+	<span class="syntax-node-id">myRightTriangleLabeledNode</span><span class="syntax-node-label">&gt;&gt;Label&gt;&gt;</span>
+	<span class="syntax-node-id">myLeftTriangleNode</span><span class="syntax-node-label">&lt;A&lt;</span>
+	<span class="syntax-node-id">myDashedRhombusNode</span><span class="syntax-node-label">{{!R}}</span>
+	<span class="syntax-node-id">myArrowNode</span><span class="syntax-node-label">%Buffer%</span>
+</code>
+
+				<p>Nodes can be referred back to or overwritten by reusing their identifier.</p>
+				<code>diagram
+	<span class="syntax-node-id">firstNode</span>
+	<span class="syntax-node-id">secondNode</span>
+	<span class="syntax-node-id">firstNode</span><span class="syntax-node-label">(With Label)</span>
+</code>
+
+				<p>Nodes can be connected together using edges. Edges are defined by a source node and a destination node, a type and direction. Again, the type affects the visual representation of the edge. Optionally, additional information can be displayed on the edge by adding a label and/or graphic symbol at the start and/or end.</p>
+				<code>diagram
+	<span class="syntax-node-id">firstNode</span><span class="syntax-node-label">(First Node)</span>
+	<span class="syntax-node-id">secondNode</span><span class="syntax-node-label">[!Big]</span>
+
+	<span class="syntax-node-id">firstNode</span> =&gt; <span class="syntax-node-id">secondNode</span>
+	<span class="syntax-node-id">secondNode</span> -&gt; <span class="syntax-node-id">thirdNode</span><span class="syntax-node-label">[Look, dashed and looped!]</span>
+	<span class="syntax-node-id">thirdNode</span> =&gt; <span class="syntax-node-id">thirdNode</span>
+
+	<span class="syntax-node-id">fourthNode</span><span class="syntax-node-label">[Type symbols can be...]</span> *******&gt; <span class="syntax-node-id">fifthNode</span><span class="syntax-node-label">[Repeated as many times as you want]</span>
+	<span class="syntax-node-id">sixthNode</span><span class="syntax-node-label">[Directionless]</span> == <span class="syntax-node-id">seventhNode</span>
+	<span class="syntax-node-id">eighthNode</span><span class="syntax-node-label">[Backwards]</span> &lt;----- <span class="syntax-node-id">ninthNode</span>
+	<span class="syntax-node-id">tenthNode</span><span class="syntax-node-label">[Bidirectional]</span> &lt;*&gt; <span class="syntax-node-id">eleventhNode</span>
+
+diagram
+	<span class="syntax-node-id">a</span> =USB=&gt; <span class="syntax-node-id">b</span>
+	<span class="syntax-node-id">c</span> -Software-&gt; <span class="syntax-node-id">d</span>
+	<span class="syntax-node-id">e</span> *Wireless*&gt; <span class="syntax-node-id">f</span>
+
+	<span class="syntax-node-id">g</span> ===Repeat=====&gt; <span class="syntax-node-id">h</span>
+	
+diagram
+	<span class="syntax-node-id">i</span><span class="syntax-node-label">[Audio]</span>       |A|=&gt; <span class="syntax-node-id">j</span>
+	<span class="syntax-node-id">k</span><span class="syntax-node-label">[Video]</span>       |V|=&gt; <span class="syntax-node-id">l</span>
+	<span class="syntax-node-id">m</span><span class="syntax-node-label">[Data Stream]</span> |D|=&gt; <span class="syntax-node-id">n</span>
+	<span class="syntax-node-id">o</span><span class="syntax-node-label">[Event]</span>       |E|=&gt; <span class="syntax-node-id">p</span>
+	<span class="syntax-node-id">q</span><span class="syntax-node-label">[Buffer]</span>      |B|=&gt; <span class="syntax-node-id">r</span>
+	<span class="syntax-node-id">s</span><span class="syntax-node-label">[Spectral]</span>    |S|=&gt; <span class="syntax-node-id">t</span>
+
+diagram
+	<span class="syntax-node-id">one</span><span class="syntax-node-label">[Combine a symbol with a types and a label]</span> |A|&lt;===Label===&gt;|A| <span class="syntax-node-id">two</span><span class="syntax-node-label">[To make highly specific edges]</span>
+</code>
+
+			<p>Comments can be added to any directive, and will be displayed in the diagram alongside the source node of that directive.</p>
+			<code>diagram
+	<span class="syntax-node-id">foot</span><span class="syntax-node-label">((Left foot))</span> =&gt; <span class="syntax-node-id">pedal</span><span class="syntax-node-label">(Pedal)</span>    <span class="syntax-comment">// Stomp very firmly</span>
+</code>
+
+			<p>To control the origin or destination of an edge or to add additional information, ports can be defined on a node. A port is defined by appending a node with a . (period) and then an identifier for the port. Optionally, a label and symbol can be added, and the port can be made vertical (useful in the case of a trigger for a switch, for example). Port identifier can be reused to create multiple edges from or to a single port.</p>
+			<code>diagram
+	<span class="syntax-node-id">nodeA</span><span class="syntax-node-label">[A]</span>.<span class="syntax-port-id">portA</span> =&gt; <span class="syntax-node-id">nodeB</span><span class="syntax-node-label">[B]</span>.<span class="syntax-port-id">portA</span>
+	<span class="syntax-node-id">nodeA</span>.<span class="syntax-port-id">portB</span> =&gt; <span class="syntax-node-id">nodeC</span><span class="syntax-node-label">[C]</span>.<span class="syntax-port-id">portA</span>
+	<span class="syntax-node-id">nodeB</span>.<span class="syntax-port-id">portB</span> =&gt; <span class="syntax-node-id">nodeC</span>.<span class="syntax-port-id">portB</span>
+	<span class="syntax-node-id">nodeB</span>.<span class="syntax-port-id">portC</span> =&gt; <span class="syntax-node-id">nodeC</span>.<span class="syntax-port-id">portB</span>
+
+diagram
+	<span class="syntax-node-id">nodeA</span><span class="syntax-node-label">[A]</span>.<span class="syntax-port-id">portA</span><span class="syntax-port-label">[Port A]</span> =&gt; <span class="syntax-node-id">nodeB</span>
+	<span class="syntax-node-id">nodeA</span>.<span class="syntax-port-id">portB</span><span class="syntax-port-label">[Port B]</span> =&gt; <span class="syntax-node-id">nodeB</span>
+	<span class="syntax-node-id">nodeB</span>.<span class="syntax-port-id">outA</span><span class="syntax-port-label">[|D|Data Stream]</span> =&gt; <span class="syntax-node-id">nodeC</span>.<span class="syntax-port-id">param</span><span class="syntax-port-label">[|P|Parameter]</span>
+	<span class="syntax-node-id">nodeB</span> =&gt; <span class="syntax-node-id">nodeC</span>.<span class="syntax-port-id">enable</span><span class="syntax-port-label">[|E|Enable]</span>
+	<span class="syntax-node-id">nodeB</span> =&gt; <span class="syntax-node-id">nodeC</span>.<span class="syntax-port-id">trigger</span><span class="syntax-port-label">[|T|Trigger]</span>
+
+diagram
+	<span class="syntax-node-id">pedal</span><span class="syntax-node-label">(Foot Pedal)</span> =&gt; <span class="syntax-node-id">gate</span><span class="syntax-node-label">[Gate]</span>.<span class="syntax-port-id">^trigger</span> <span class="syntax-comment">// Prepend port identifier with ^</span>
+	<span class="syntax-node-id">input</span><span class="syntax-node-label">[Input]</span> =&gt; <span class="syntax-node-id">gate</span>
+	<span class="syntax-node-id">gate</span> =&gt; <span class="syntax-node-id">output</span><span class="syntax-node-label">&lt;Speaker&lt;</span>
+</code>
+			<u>Examples</u>
+			<p>Copy and paste these examples to see their output.</p>
+			<code>diagram
+	<span class="syntax-node-id">source</span><span class="syntax-node-label">[Synthesizer]</span>
+
+	<span class="syntax-node-id">source</span>.<span class="syntax-port-id">audioRight</span><span class="syntax-port-label">[R]</span>  |A|=Jack=&gt;   <span class="syntax-node-id">adc</span>.<span class="syntax-port-id">right</span><span class="syntax-port-label">[|D|Right]</span>
+	<span class="syntax-node-id">source</span>.<span class="syntax-port-id">audioLeft</span><span class="syntax-port-label">[L]</span>   |A|=Jack=&gt;   <span class="syntax-node-id">adc</span><span class="syntax-node-label">[ADC]</span>.<span class="syntax-port-id">left</span><span class="syntax-port-label">[|D|Left]</span>
+
+	<span class="syntax-node-id">adc</span>                    |D|=USB=&gt;   <span class="syntax-node-id">switch</span><span class="syntax-node-label">[Switch]</span>
+
+	<span class="syntax-node-id">switch</span>.<span class="syntax-port-id">left</span>                |D|=&gt;   <span class="syntax-node-id">destA</span><span class="syntax-node-label">&lt;Left DAC&lt;</span>
+	<span class="syntax-node-id">switch</span>.<span class="syntax-port-id">both</span>                |D|=&gt;   <span class="syntax-node-id">destA</span>
+	<span class="syntax-node-id">switch</span>.<span class="syntax-port-id">both</span>                |D|=&gt;   <span class="syntax-node-id">destB</span><span class="syntax-node-label">&lt;Right DAC&lt;</span>
+	<span class="syntax-node-id">switch</span>.<span class="syntax-port-id">right</span>               |D|=&gt;   <span class="syntax-node-id">destB</span>
+
+	<span class="syntax-node-id">trigger</span><span class="syntax-node-label">(Foot Pedal)</span>.<span class="syntax-port-id">^out</span>      =&gt;   <span class="syntax-node-id">switch</span>.<span class="syntax-port-id">^trigger</span>       <span class="syntax-comment">// Press down firmly</span>
+</code>
+<code>diagram
+	<span class="syntax-node-id">value</span><span class="syntax-node-label">[Accelerometer]</span>.<span class="syntax-port-id">x</span><span class="syntax-port-label">[|D|x]</span> |D|-&gt; <span class="syntax-node-id">bufferX</span><span class="syntax-node-label">%Buffer%</span>
+	<span class="syntax-node-id">value</span><span class="syntax-node-label">[Accelerometer]</span>.<span class="syntax-port-id">y</span><span class="syntax-port-label">[|D|y]</span> |D|-&gt; <span class="syntax-node-id">bufferY</span><span class="syntax-node-label">%Buffer%</span>
+	<span class="syntax-node-id">bufferX</span> |B|==&gt; <span class="syntax-node-id">filterX</span><span class="syntax-node-label">[Filter Accumulation]</span>
+	<span class="syntax-node-id">bufferY</span> |B|==&gt; <span class="syntax-node-id">filterY</span><span class="syntax-node-label">[Filter Smoothing]</span>
+</code>
+<code>diagram
+	<span class="syntax-node-id">leftHand</span><span class="syntax-node-label">((Ľavá ruka))</span> =&gt; <span class="syntax-node-id">slider</span><span class="syntax-node-label">(Gombík)</span> <span class="syntax-comment">// Pracovať pomaly zľava doprava</span>
+
+	<span class="syntax-node-id">value</span><span class="syntax-node-label">[!22]</span> =&gt; <span class="syntax-node-id">max</span><span class="syntax-node-label">[!Max]</span>
+	<span class="syntax-node-id">slider</span> |D|**&gt; <span class="syntax-node-id">max</span>
+	<span class="syntax-node-id">max</span> =&gt; <span class="syntax-node-id">delta</span><span class="syntax-node-label">[!Δ?]</span>
+	<span class="syntax-node-id">delta</span> =&gt; <span class="syntax-node-id">result</span><span class="syntax-node-label">&lt;V&amp;yacute;sledok&lt;</span>
+</code>
+<code>diagram
+	<span class="syntax-node-id">aa</span><span class="syntax-node-label">[Node A]</span>
+	<span class="syntax-node-id">bb</span><span class="syntax-node-label">{{Node B}}</span>        ==&gt;      <span class="syntax-node-id">aa</span>.<span class="syntax-port-id">enable</span><span class="syntax-port-label">[|E|Enable]</span>
+	<span class="syntax-node-id">cc</span><span class="syntax-node-label">(Node C)</span>        &lt;-         <span class="syntax-node-id">aa</span>.<span class="syntax-port-id">input</span><span class="syntax-port-label">[Out on left]</span>
+	<span class="syntax-node-id">dd</span><span class="syntax-node-label">&gt;&gt;Node D&gt;&gt;</span>
+	<span class="syntax-node-id">aa</span>.<span class="syntax-port-id">output</span>        |A|**&gt;      <span class="syntax-node-id">dd</span>          <span class="syntax-comment">// Gradual increase</span>
+</code>
+			</div>
+		</div>
 	</div>
 	<script src="app/app.js"/>
 </body>

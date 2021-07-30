@@ -1,5 +1,6 @@
 import peg from 'pegjs';
 import fs from 'fs';
+import JSZip from 'jszip';
 import Mapper from './lib/mapper';
 import { escapeHTML } from './lib/lib';
 
@@ -20,6 +21,7 @@ const highlighter = peg.generate(highlightGrammar);
 
 //
 
+const editor = document.querySelector('.editor');
 const input = document.querySelector('.input');
 const error = document.querySelector('.error');
 const output = document.querySelector('.output');
@@ -47,6 +49,10 @@ function updateSVG() {
 	);
 }
 
+function saveToMemory(text) {
+	window.localStorage.setItem('text', text);
+}
+
 function highlight(text) {
 	clearTimeout(timeout);
 
@@ -63,10 +69,32 @@ function highlight(text) {
 
 		error.textContent = er;
 	}
+
+	saveToMemory(text);
 }
 
-input.textContent = defaultGraph;
-highlight(defaultGraph);
+const memoryText = window.localStorage.getItem('text');
+
+if (!memoryText || memoryText.length < 1) {
+	input.textContent = defaultGraph;
+	highlight(defaultGraph);
+} else {
+	input.textContent = memoryText;
+	highlight(memoryText);
+}
+
+const documentationOpen = window.localStorage.getItem('documentation-open');
+
+if (documentationOpen === 'false')
+	editor.classList.remove('documentation-open');
+
+if (!memoryText || memoryText.length < 1) {
+	input.textContent = defaultGraph;
+	highlight(defaultGraph);
+} else {
+	input.textContent = memoryText;
+	highlight(memoryText);
+}
 
 function syncScroll() {
 	highlighted.scrollTop = input.scrollTop;
@@ -102,3 +130,72 @@ input.addEventListener('input', function (e) {
 	highlight(this.value);
 	syncScroll();
 });
+
+document.querySelector('.save-input').addEventListener('click', (e) => {
+	const element = document.createElement('a');
+	element.setAttribute(
+		'href',
+		`data:text/plain;charset=utf-8,${encodeURIComponent(input.value)}`
+	);
+	element.setAttribute(
+		'download',
+		`Diagram ${new Date()
+			.toISOString()
+			.split('Z')[0]
+			.split('.')[0]
+			.replace('T', ' at ')
+			.replace(/:/g, '.')}.diagram`
+	);
+
+	element.style.display = 'none';
+	document.body.appendChild(element);
+
+	element.click();
+
+	document.body.removeChild(element);
+});
+
+document.querySelector('.save-output').addEventListener('click', (e) => {
+	const zip = new JSZip();
+	const name = `Diagrams ${new Date()
+		.toISOString()
+		.split('Z')[0]
+		.split('.')[0]
+		.replace('T', ' at ')
+		.replace(/:/g, '.')}`;
+
+	const folder = zip.folder(name);
+
+	[].slice.call(output.querySelectorAll('svg')).forEach((svg, i) => {
+		folder.file(`Diagram ${i + 1}.svg`, `${svg.outerHTML}\n`);
+	});
+
+	zip.generateAsync({ type: 'base64' }).then((base64) => {
+		const element = document.createElement('a');
+		element.setAttribute(
+			'href',
+			`data:application/zip;base64,${encodeURIComponent(base64)}`
+		);
+
+		element.setAttribute('download', `${name}.zip`);
+
+		element.style.display = 'none';
+		document.body.appendChild(element);
+
+		element.click();
+
+		document.body.removeChild(element);
+	});
+});
+
+document
+	.querySelector('.toggle-documentation')
+	.addEventListener('click', () => {
+		if (editor.classList.contains('documentation-open')) {
+			editor.classList.remove('documentation-open');
+			window.localStorage.setItem('documentation-open', false);
+		} else {
+			editor.classList.add('documentation-open');
+			window.localStorage.setItem('documentation-open', true);
+		}
+	});

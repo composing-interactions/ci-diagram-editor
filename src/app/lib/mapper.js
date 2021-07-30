@@ -74,7 +74,7 @@ class Mapper {
 				'spacing.portPort': 48,
 				'spacing.edgeLabel': 15,
 				'spacing.nodeSelfLoop': 30,
-				'layered.edgeLabels.sideSelection': 'SMART_UP',
+				'layered.edgeLabels.sideSelection': 'ALWAYS_UP',
 				'layered.spacing.baseValue': 60,
 				'layered.layering.strategy': 'NETWORK_SIMPLEX',
 				'layered.wrapping.strategy': 'MULTI_EDGE',
