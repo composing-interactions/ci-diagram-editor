@@ -57,15 +57,15 @@ function highlight(text) {
 	clearTimeout(timeout);
 
 	try {
-		highlighted.innerHTML = escapeHTML(highlighter.parse(text)).replace(
+		highlighted.innerHTML = `${escapeHTML(highlighter.parse(text)).replace(
 			/#####([^#]+)#####([^#]+)#####/g,
 			'<span class="syntax-$1">$2</span>'
-		);
+		)}&nbsp;`;
 		error.textContent = '';
 
 		timeout = setTimeout(updateSVG, 1000);
 	} catch (er) {
-		highlighted.innerHTML = escapeHTML(text);
+		highlighted.innerHTML = `${escapeHTML(text)}&nbsp;`;
 
 		error.textContent = er;
 	}
