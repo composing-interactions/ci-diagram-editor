@@ -5,4 +5,11 @@ This repository contains the code for a diagram editor, inspired and partly base
 
 The code was originally written by Bram Bogaerts from Superposition.
 
-*documentation on how to install will follow*
+
+## to run it locally on your own computer
+
+- install NodeJS and npm (a node module installer)
+- then, from the command line, run `npm install`
+- and `npm run-script dev`
+
+and then browse to http://localhost:1234

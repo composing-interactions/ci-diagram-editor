@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/superpositioncc/question-of-mapping.git"
+    "url": "git+https://github.com/composing-interactions/ci-diagram-editor.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/superpositioncc/question-of-mapping/issues"
+    "url": "https://github.com/composing-interactions/ci-diagram-editor/issues"
   },
-  "homepage": "https://github.com/superpositioncc/question-of-mapping#readme",
+  "homepage": "https://github.com/composing-interactions/ci-diagram-editor#readme",
   "dependencies": {
     "dagre": "^0.8.5",
     "elkjs": "^0.7.1",
